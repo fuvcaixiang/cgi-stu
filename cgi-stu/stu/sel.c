@@ -20,13 +20,13 @@ int cgiMain()
 		    <link rel=\"stylesheet\" href=\"/stu/public/css/bootstrap.min.css\">\
 		</head>");
 
-	char sname[32] = "\0";
+	char name[32] = "\0";
 	int status = 0;
 
-	status = cgiFormString("sname",  sname, 32);
+	status = cgiFormString("name",  name, 32);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get sname error!\n");
+		fprintf(cgiOut, "get name error!\n");
 		return 1;
 	}
 
@@ -34,13 +34,13 @@ int cgiMain()
 	MYSQL *db;
 	char sql[128] = "\0";
 
-	if (sname[0] == '*')
+	if (name[0] == '*')
 	{
-		sprintf(sql, "select * from information");
+		sprintf(sql, "select * from stu");
 	}
 	else
 	{
-		sprintf(sql, "select * from information where sname = '%s'", sname);
+		sprintf(sql, "select * from stu where name = '%s'", name);
 	}
 
 
@@ -53,7 +53,7 @@ int cgiMain()
 	}
 
 	//连接数据库
-	db = mysql_real_connect(db, "127.0.0.1", "root", "123456", "stu",  3306, NULL, 0);
+	db = mysql_real_connect(db, "127.0.0.1", "root", "1", "studb",  3306, NULL, 0);
 	if (db == NULL)
 	{
 		fprintf(cgiOut,"mysql_real_connect fail:%s\n", mysql_error(db));
@@ -74,7 +74,7 @@ int cgiMain()
 	if (res == NULL)
 	{
 		fprintf(cgiOut,"mysql_store_result fail:%s\n", mysql_error(db));
-		return -1;
+		return ;
 	}
 
 	fprintf(cgiOut, "<div class=\"container\"> <h1 class=\"text-center\">查询结果</h1>");
