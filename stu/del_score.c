@@ -9,23 +9,23 @@ char * footname="footer.html";
 int cgiMain()
 {
 	FILE * fd;
-
 	char ch;
 
 	fprintf(cgiOut, "Content-type:text/html;charset=utf-8\n\n");
-	if(!(fd = fopen(headname, "r"))){
-		fprintf(cgiOut, "Cannot open file, %s\n", headname);
+	if(!(fd=fopen(headname,"r"))){
+		fprintf(cgiOut,"Cannot open file,%s\n", headname);
 		return -1;
 	}
-	ch = fgetc(fd);
+	ch=fgetc(fd);
 
-	while(ch != EOF){
-		fprintf(cgiOut, "%c", ch);
-		ch = fgetc(fd);
+	while(ch!=EOF){
+		fprintf(cgiOut,"%c\n", ch);
+		ch=fgetc(fd);
 	}
-fclose(fd);
+	fclose(fd);
 
 	char sno[32] = "\0";
+  char cno[32] = "\0";
 	int status = 0;
 
 
@@ -35,7 +35,12 @@ fclose(fd);
 		fprintf(cgiOut, "get sno error!\n");
 		return 1;
 	}
-
+  status = cgiFormString("cno",  cno, 32);
+  if (status != cgiFormSuccess)
+  {
+    fprintf(cgiOut, "get cno error!\n");
+    return 1;
+  }
 
 	int ret;
 	char sql[128] = "\0";
@@ -59,7 +64,7 @@ fclose(fd);
 	}
 
 
-	sprintf(sql, "delete from information where sno = %d", atoi(sno));
+	sprintf(sql, "delete from score where sno = %d && cno=%d", atoi(sno),atoi(cno));
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
@@ -68,7 +73,7 @@ fclose(fd);
 	}
 
 
-	fprintf(cgiOut, "delete information ok!\n");
+	fprintf(cgiOut, "delete score ok!\n");
 	mysql_close(db);
 
 	return 0;

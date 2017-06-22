@@ -35,13 +35,13 @@ fclose(fd);
 		    <link rel=\"stylesheet\" href=\"/stu/public/css/bootstrap.min.css\">\
 		</head>");
 
-	char sname[32] = "\0";
+	char cname[32] = "\0";
 	int status = 0;
 
-	status = cgiFormString("sname",  sname, 32);
+	status = cgiFormString("cname",  cname, 32);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get sname error!\n");
+		fprintf(cgiOut, "get cname error!\n");
 		return 1;
 	}
 
@@ -49,13 +49,13 @@ fclose(fd);
 	MYSQL *db;
 	char sql[128] = "\0";
 
-	if (sname[0] == '*')
+	if (cname[0] == '*')
 	{
-		sprintf(sql, "select * from information");
+		sprintf(sql, "select * from course");
 	}
 	else
 	{
-		sprintf(sql, "select * from information where sname = '%s'", sname);
+		sprintf(sql, "select * from course where cname = '%s'", cname);
 	}
 
 

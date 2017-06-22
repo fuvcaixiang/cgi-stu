@@ -3,10 +3,8 @@
 #include <stdlib.h>
 #include <mysql/mysql.h>
 #include "cgic.h"
-
-char * headname = "head.html";
-char * footname = "footer.html";
-
+char * headname="head.html";
+char * footname="footer.html";
 
 int cgiMain()
 {
@@ -27,51 +25,30 @@ int cgiMain()
 	}
 fclose(fd);
 
-	char sname[32] = "\0";
-	char sage[16] = "\0";
 	char sno[32] = "\0";
-	char sex[32] = "\0";
-	char sdeptno[32] = "\0";
-	char tag[10]= "\0";
+	char cno[32] = "\0";
+	char grade[32] = "\0";
 	int status = 0;
 
-	status = cgiFormString("sname",  sname, 32);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get sname error!\n");
-		return 1;
-	}
-
-	status = cgiFormString("sage",  sage, 16);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get sage error!\n");
-		return 1;
-	}
 	status = cgiFormString("sno",  sno, 32);
 	if (status != cgiFormSuccess)
 	{
 		fprintf(cgiOut, "get sno error!\n");
 		return 1;
 	}
-	status = cgiFormString("sex",  sex, 32);
+
+	status = cgiFormString("cno",  cno, 16);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get sex error!\n");
+		fprintf(cgiOut, "get cno error!\n");
 		return 1;
 	}
-	status = cgiFormString("sdeptno",  sdeptno, 32);
+	status = cgiFormString("grade",  grade, 32);
 	if (status != cgiFormSuccess)
 	{
-		fprintf(cgiOut, "get sdeptno error!\n");
+		fprintf(cgiOut, "get grade error!\n");
 		return 1;
 	}
-	/*status = cgiFormString("tag",  tag, 10);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get tag error!\n");
-		return 1;
-	}*/
 	//fprintf(cgiOut, "name = %s, age = %s, stuId = %s\n", name, age, stuId);
 
 	int ret;
@@ -97,7 +74,7 @@ fclose(fd);
 
 
 
-	strcpy(sql, "create table information(sno int not null primary key, sname varchar(20) not null, sex char(10) not null default 'F',sage int not null,sdeptno int(4) not null,tag char(10))");
+	strcpy(sql, "create table score(sno int(4),cno int(4),grade smallint,primary key (sno,cno),foreign key (sno) references information(sno),foreign key (cno) references course(cno)");
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		if (ret != 1)
@@ -110,7 +87,7 @@ fclose(fd);
 
 
 
-	sprintf(sql, "insert into information values(%d, '%s', '%s',%d,'%s','%s')", atoi(sno), sname, sex,atoi(sage),sdeptno,tag);
+	sprintf(sql, "insert into score values(%d, %d,'%s')", atoi(sno), atoi(cno),grade);
 	if (mysql_real_query(db, sql, strlen(sql) + 1) != 0)
 	{
 		fprintf(cgiOut, "%s\n", mysql_error(db));
@@ -118,7 +95,7 @@ fclose(fd);
 		return -1;
 	}
 
-	fprintf(cgiOut, "add information ok!\n");
+	fprintf(cgiOut, "add score ok!\n");
 	mysql_close(db);
 	return 0;
 }

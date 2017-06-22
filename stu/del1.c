@@ -25,46 +25,16 @@ int cgiMain()
 	}
 fclose(fd);
 
-	char sname[32] = "\0";
-	char sage[16] = "\0";
 	char sno[32] = "\0";
-	char sex[32] = "\0";
-	char sdeptno[32] = "\0";
 	int status = 0;
 
-	status = cgiFormString("sname",  sname, 32);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get sname error!\n");
-		return 1;
-	}
 
-	status = cgiFormString("sage",  sage, 16);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get sage error!\n");
-		return 1;
-	}
-
-	status = cgiFormString("sex",  sex, 32);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get sex error!\n");
-		return 1;
-	}
-	status = cgiFormString("sdeptno",  sdeptno, 32);
-	if (status != cgiFormSuccess)
-	{
-		fprintf(cgiOut, "get sdeptno error!\n");
-		return 1;
-	}
 	status = cgiFormString("sno",  sno, 32);
 	if (status != cgiFormSuccess)
 	{
 		fprintf(cgiOut, "get sno error!\n");
 		return 1;
 	}
-	//fprintf(cgiOut, "name = %s, age = %s, stuId = %s\n", name, age, stuId);
 
 	int ret;
 	char sql[128] = "\0";
@@ -88,7 +58,7 @@ fclose(fd);
 	}
 
 
-	sprintf(sql, "update information set sname='%s', sage= %d,sex='%s',sdeptno='%s' where sno= %d ", sname, atoi(sage),sex,sdeptno,atoi(sno));
+	sprintf(sql, "update information set tag='1' where sno = %d", atoi(sno));
 	if ((ret = mysql_real_query(db, sql, strlen(sql) + 1)) != 0)
 	{
 		fprintf(cgiOut,"mysql_real_query fail:%s\n", mysql_error(db));
@@ -97,8 +67,8 @@ fclose(fd);
 	}
 
 
-
-	fprintf(cgiOut, "update information ok!\n");
+	fprintf(cgiOut, "delete information ok!\n");
 	mysql_close(db);
+
 	return 0;
 }
